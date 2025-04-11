@@ -1,0 +1,9 @@
+{
+  "name": "@saas/prettier",
+  "vesion": "0.0.0",
+  "main": "index.mjs",
+  "private": true,
+  "devDependencies": {
+    "prettier-plugin-tailwindcss": "^0.6.11"
+  }
+}
