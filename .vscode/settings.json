@@ -3,5 +3,7 @@
     {
       "mode": "auto"
     }
-  ]
+  ],
+
+  "typescript.preferences.preferTypeOnlyAutoImports": true
 }
