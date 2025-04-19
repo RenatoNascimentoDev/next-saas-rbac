@@ -16,7 +16,7 @@ import { getProfile } from './routes/auth/get-profile'
 import { errorHandler } from './error-handler'
 import { requestPasswordRecover } from './routes/auth/request-password-recover'
 import { requestPassword } from './routes/auth/reset-password'
-import { authenticateWithGitHub } from './routes/auth/authenticate-with-github'
+import { authenticateWithGithub } from './routes/auth/authenticate-with-github'
 import { env } from '@saas/env'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
@@ -33,7 +33,15 @@ app.register(fastifySwagger, {
       description: 'Full-stack SaaS with multi-tenant & RBAC.',
       version: '1.0.0',
     },
-    servers: [],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   transform: jsonSchemaTransform,
 })
@@ -50,7 +58,7 @@ app.register(fastifyCors)
 
 app.register(createAccount)
 app.register(authenticateWithPassword)
-app.register(authenticateWithGitHub)
+app.register(authenticateWithGithub)
 
 app.register(getProfile)
 app.register(requestPasswordRecover)

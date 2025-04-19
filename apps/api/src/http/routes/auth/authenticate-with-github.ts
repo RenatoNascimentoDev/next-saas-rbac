@@ -1,17 +1,18 @@
+import { env } from '@saas/env'
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
-import { BadRequestError } from '../_errors/bad-request-error'
-import { prisma } from '@/lib/prisma'
-import { env } from '@saas/env'
 
-export async function authenticateWithGitHub(app: FastifyInstance) {
+import { BadRequestError } from '@/http/routes/_errors/bad-request-error'
+import { prisma } from '@/lib/prisma'
+
+export async function authenticateWithGithub(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
     '/sessions/github',
     {
       schema: {
-        tags: ['auth'],
-        summary: 'Authenticate with Github',
+        tags: ['Auth'],
+        summary: 'Authenticate with GitHub',
         body: z.object({
           code: z.string(),
         }),
@@ -22,28 +23,28 @@ export async function authenticateWithGitHub(app: FastifyInstance) {
         },
       },
     },
-    async (request, replay) => {
+    async (request, reply) => {
       const { code } = request.body
 
       const githubOAuthURL = new URL(
-        'https://github.com/login/oauth/acess_token'
+        'https://github.com/login/oauth/access_token'
       )
 
-      githubOAuthURL.searchParams.set('client_id', env.GITHUB_OAUTH_CLEINT_ID)
+      githubOAuthURL.searchParams.set('client_id', env.GITHUB_OAUTH_CLIENT_ID)
       githubOAuthURL.searchParams.set(
         'client_secret',
-        env.GITHUB_OAUTH_CLEINT_SECRET
+        env.GITHUB_OAUTH_CLIENT_SECRET
       )
       githubOAuthURL.searchParams.set(
         'redirect_uri',
-        env.GITHUB_OAUTH_CLEINT_REDIRECT_URI
+        env.GITHUB_OAUTH_CLIENT_REDIRECT_URI
       )
       githubOAuthURL.searchParams.set('code', code)
 
       const githubAccessTokenResponse = await fetch(githubOAuthURL, {
         method: 'POST',
         headers: {
-          Accept: 'aplication/json',
+          Accept: 'application/json',
         },
       })
 
@@ -57,13 +58,13 @@ export async function authenticateWithGitHub(app: FastifyInstance) {
         })
         .parse(githubAccessTokenData)
 
-      const githubUserResponse = await fetch('https://github.com/user', {
+      const githubUserResponse = await fetch('https://api.github.com/user', {
         headers: {
-          Authorization: `Bearer $(githubAccessToken)`,
+          Authorization: `Bearer ${githubAccessToken}`,
         },
       })
 
-      const githubUserData = githubUserResponse.json()
+      const githubUserData = await githubUserResponse.json()
 
       const {
         id: githubId,
@@ -79,9 +80,9 @@ export async function authenticateWithGitHub(app: FastifyInstance) {
         })
         .parse(githubUserData)
 
-      if (email == null) {
+      if (email === null) {
         throw new BadRequestError(
-          'Your Github account must have an email to authenticate.'
+          'Your GitHub account must have an email to authenticate.'
         )
       }
 
@@ -92,8 +93,8 @@ export async function authenticateWithGitHub(app: FastifyInstance) {
       if (!user) {
         user = await prisma.user.create({
           data: {
-            name,
             email,
+            name,
             avatarUrl,
           },
         })
@@ -118,7 +119,7 @@ export async function authenticateWithGitHub(app: FastifyInstance) {
         })
       }
 
-      const token = await replay.jwtSign(
+      const token = await reply.jwtSign(
         {
           sub: user.id,
         },
@@ -129,7 +130,7 @@ export async function authenticateWithGitHub(app: FastifyInstance) {
         }
       )
 
-      return replay.status(201).send({ token })
+      return reply.status(201).send({ token })
     }
   )
 }
