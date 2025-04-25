@@ -30,13 +30,13 @@ export async function getProject(app: FastifyInstance) {
                 description: z.string(),
                 name: z.string(),
                 slug: z.string(),
-                avatarUrl: z.string().nullable(),
+                avatarUrl: z.string().url().nullable(),
                 organizationId: z.string().uuid(),
                 ownerId: z.string().uuid(),
                 owner: z.object({
                   id: z.string().uuid(),
                   name: z.string().nullable(),
-                  avatarUrl: z.string().nullable(),
+                  avatarUrl: z.string().url().nullable(),
                 }),
               }),
             }),
@@ -47,7 +47,7 @@ export async function getProject(app: FastifyInstance) {
         const { orgSlug, projectSlug } = request.params
         const userId = await request.getCurrentUserId()
         const { organization, membership } =
-          await request.getuserMembership(orgSlug)
+          await request.getUserMembership(orgSlug)
 
         const { cannot } = getUserPermissions(userId, membership.role)
 
