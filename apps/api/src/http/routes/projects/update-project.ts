@@ -1,15 +1,15 @@
-import { auth } from '@/http/middlewares/auth'
+import { projectSchema } from '@saas/auth'
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
+import { auth } from '@/http/middlewares/auth'
+import { BadRequestError } from '@/http/routes/_errors/bad-request-error'
+import { UnauthorizedError } from '@/http/routes/_errors/unauthorized-error'
 import { prisma } from '@/lib/prisma'
-import { UnauthorizedError } from '../_errors/unauthorized-error'
 import { getUserPermissions } from '@/utils/get-user-permissions'
-import { projectSchema } from '@saas/auth'
-import { BadRequestError } from '../_errors/bad-request-error'
 
-export async function deleteProject(app: FastifyInstance) {
+export async function updateProject(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
@@ -17,9 +17,13 @@ export async function deleteProject(app: FastifyInstance) {
       '/organizations/:slug/projects/:projectId',
       {
         schema: {
-          tags: ['projects'],
-          summary: 'Delete a project',
+          tags: ['Projects'],
+          summary: 'Update a project',
           security: [{ bearerAuth: [] }],
+          body: z.object({
+            name: z.string(),
+            description: z.string(),
+          }),
           params: z.object({
             slug: z.string(),
             projectId: z.string().uuid(),
@@ -43,21 +47,27 @@ export async function deleteProject(app: FastifyInstance) {
         })
 
         if (!project) {
-          throw new BadRequestError('Project not found')
+          throw new BadRequestError('Project not found.')
         }
 
         const { cannot } = getUserPermissions(userId, membership.role)
         const authProject = projectSchema.parse(project)
 
-        if (cannot('delete', 'Project')) {
+        if (cannot('update', authProject)) {
           throw new UnauthorizedError(
-            `You're not allowed to delete this projects.`
+            `You're not allowed to update this project.`
           )
         }
 
-        await prisma.project.delete({
+        const { name, description } = request.body
+
+        await prisma.project.update({
           where: {
             id: projectId,
+          },
+          data: {
+            name,
+            description,
           },
         })
 
