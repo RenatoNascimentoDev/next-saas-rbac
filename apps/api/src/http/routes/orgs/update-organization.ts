@@ -37,7 +37,7 @@ export async function updateOrganization(app: FastifyInstance) {
 
         const userId = await request.getCurrentUserId()
         const { membership, organization } =
-          await request.getuserMembership(slug)
+          await request.getUserMembership(slug)
 
         const { name, domain, shouldAttachUsersByDomain } = request.body
 

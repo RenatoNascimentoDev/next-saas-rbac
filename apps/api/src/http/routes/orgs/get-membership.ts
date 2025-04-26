@@ -31,7 +31,7 @@ export async function getMembership(app: FastifyInstance) {
       },
       async (request) => {
         const { slug } = request.params
-        const { membership } = await request.getuserMembership(slug)
+        const { membership } = await request.getUserMembership(slug)
 
         return {
           membership: {
