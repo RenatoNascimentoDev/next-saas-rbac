@@ -1,11 +1,11 @@
+import Image from 'next/image'
+import Link from 'next/link'
+
+import githubIcon from '@/assets/github-icon.svg'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-
-import githubIcon from '@/assets/github-icon.svg'
-import Link from 'next/link'
-import Image from 'next/image'
 
 export default function SignUpPage() {
   return (

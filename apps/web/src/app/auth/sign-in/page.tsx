@@ -1,15 +1,21 @@
+import Image from 'next/image'
+import Link from 'next/link'
+
+import githubIcon from '@/assets/github-icon.svg'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 
-import githubIcon from '@/assets/github-icon.svg'
-import Link from 'next/link'
-import Image from 'next/image'
+import { signInWithEmailAndPassword } from './actions'
 
 export default function SignInPage() {
   return (
-    <form action="" className="space-y-4">
+    <form
+      action={signInWithEmailAndPassword}
+      className="space-y-4"
+      cursor-pointer
+    >
       <div className="space-y-1">
         <Label htmlFor="email">E-mail</Label>
         <Input name="email" type="email" id="email" />
@@ -27,24 +33,25 @@ export default function SignInPage() {
         </Link>
       </div>
 
-      <Button type="submit" className="w-full cursor-pointer">
+      <Button className="w-full" type="submit">
         Sign in with e-mail
       </Button>
 
       <Button
+        className="w-full"
         variant="link"
-        className="w-full cursor-pointer"
         size="sm"
         asChild
+        cursor-pointer
       >
         <Link href="/auth/sign-up">Create new account</Link>
       </Button>
 
       <Separator />
 
-      <Button type="submit" variant="outline" className="w-full cursor-pointer">
-        <Image src={githubIcon} className="mr-2 size-4 dark:invert" alt="" />
-        Sign in with Github
+      <Button type="submit" className="w-full" variant="outline">
+        <Image src={githubIcon} alt="" className="mr-2 size-4 dark:invert" />
+        Sign in with GitHub
       </Button>
     </form>
   )
