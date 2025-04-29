@@ -1,10 +1,16 @@
 'use server'
 
-import { api } from '@/http/api-client'
 import { signInWithPassword } from '@/http/sign-in-with-password'
 
-export async function signInWithEmailAndPassword(data: FormData) {
+export async function signInWithEmailAndPassword(
+  previousState: unknown,
+  data: FormData
+) {
+  console.log(previousState)
+
   const { email, password } = Object.fromEntries(data)
+
+  await new Promise((resolve) => setTimeout(resolve, 2000))
 
   const result = await signInWithPassword({
     email: String(email),
@@ -12,4 +18,6 @@ export async function signInWithEmailAndPassword(data: FormData) {
   })
 
   console.log(result)
+
+  return 'Success'
 }
