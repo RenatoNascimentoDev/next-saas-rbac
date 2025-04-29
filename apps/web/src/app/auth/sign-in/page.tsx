@@ -1,5 +1,3 @@
-'use client'
-
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -9,20 +7,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { signInWithEmailAndPassword } from './actions'
-import { useActionState } from 'react'
-
-const initialState = {
-  message: '',
-}
 
 export default function SignInPage() {
-  const [state, formAction] = useActionState(
-    signInWithEmailAndPassword,
-    initialState
-  )
-
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={signInWithEmailAndPassword} className="space-y-4">
       <div className="space-y-1">
         <Label htmlFor="email">E-mail</Label>
         <Input name="email" type="email" id="email" />
@@ -50,7 +38,6 @@ export default function SignInPage() {
 
       <Separator />
 
-      <p aria-live="polite">{state?.message}</p>
       <Button type="submit" className="w-full" variant="outline">
         <Image src={githubIcon} alt="" className="mr-2 size-4 dark:invert" />
         Sign in with GitHub

@@ -1,11 +1,7 @@
-import type { NextConfig } from 'next'
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   experimental: {
     serverActions: {
-      allowedOrigins: [
-        'https://shiny-capybara-xq4rqqg95jgfpgrx-3000.app.github.dev/auth/sign-in',
-      ],
+      allowedOrigins: ['localhost:3000'],
     },
   },
 }
