@@ -1,7 +1,13 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        'https://shiny-capybara-xq4rqqg95jgfpgrx-3000.app.github.dev/auth/sign-in',
+      ],
+    },
+  },
+}
 
-export default nextConfig;
+export default nextConfig
