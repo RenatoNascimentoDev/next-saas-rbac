@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   if (!code) {
     return NextResponse.json(
       { message: 'Github OAuth  code was not found.' },
-      { status: 400 }
+      { status: 400 },
     )
   }
 
