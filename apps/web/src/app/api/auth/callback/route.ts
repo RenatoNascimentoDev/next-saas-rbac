@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   if (!code) {
     return NextResponse.json(
       { message: 'Github OAuth  code was not found.' },
-      { status: 400 }
+      { status: 400 },
     )
   }
 
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
   const redirectUrl = new URL(
     '/',
-    'https://fictional-spork-49rq99pqx5vfjxqw-3000.app.github.dev'
+    'https://fictional-spork-49rq99pqx5vfjxqw-3000.app.github.dev',
   )
   return NextResponse.redirect(redirectUrl)
 }
