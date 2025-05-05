@@ -8,7 +8,7 @@ export async function signInWithGithub() {
   githubSignInURL.searchParams.set('client_id', 'Ov23liTyQqR9lxGE62bG')
   githubSignInURL.searchParams.set(
     'redirect_uri',
-    'https://next-saas-rbac-web-vt3e.vercel.app/api/auth/callback',
+    'https://fictional-spork-49rq99pqx5vfjxqw-3000.app.github.dev/api/auth/callback'
   )
   githubSignInURL.searchParams.set('scope', 'user')
 

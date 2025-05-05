@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   if (!code) {
     return NextResponse.json(
       { message: 'Github OAuth  code was not found.' },
-      { status: 400 },
+      { status: 400 }
     )
   }
 
@@ -20,13 +20,14 @@ export async function GET(request: NextRequest) {
   const cookieStore = await cookies()
   cookieStore.set('token', token, {
     path: '/',
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 60 * 24 * 7, // 7days
   })
 
-  const redirectUrl = request.nextUrl.clone()
+  console.log('Original URL:', request.url)
 
-  redirectUrl.pathname = '/'
-  redirectUrl.search = ''
-
+  const redirectUrl = new URL(
+    '/',
+    'https://fictional-spork-49rq99pqx5vfjxqw-3000.app.github.dev'
+  )
   return NextResponse.redirect(redirectUrl)
 }

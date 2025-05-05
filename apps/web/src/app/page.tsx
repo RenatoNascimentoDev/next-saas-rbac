@@ -1,5 +1,16 @@
+import { auth } from '@/auth/auth'
 import Link from 'next/link'
 
-export default function Home() {
-  return <Link href="/auth/sign-in">Sign in</Link>
+export default async function Home() {
+  const { user } = await auth()
+
+  return (
+    <div>
+      <pre>{JSON.stringify(user, null, 2)}</pre>
+
+      <div>
+        <Link href="/auth/sign-in">Sign in</Link>
+      </div>
+    </div>
+  )
 }
