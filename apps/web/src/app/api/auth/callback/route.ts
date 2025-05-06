@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     maxAge: 60 * 60 * 24 * 7, // 7days
   })
 
-  const redirectUrl = new URL(request.nextUrl)
+  const redirectUrl = request.nextUrl.clone()
 
   redirectUrl.pathname = '/'
   redirectUrl.search = ''

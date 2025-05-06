@@ -10,11 +10,12 @@ const signInSchema = z.object({
   email: z
     .string()
     .email({ message: 'Please, provide a valid e-mail address.' }),
-  password: z.string().min(1, { message: 'Please, provide a password.' }),
+  password: z.string().min(1, { message: 'Please, provide your password.' }),
 })
 
 export async function signInWithEmailAndPassword(data: FormData) {
   const result = signInSchema.safeParse(Object.fromEntries(data))
+
   if (!result.success) {
     const errors = result.error.flatten().fieldErrors
 
@@ -23,16 +24,13 @@ export async function signInWithEmailAndPassword(data: FormData) {
 
   const { email, password } = result.data
 
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-
   try {
     const { token } = await signInWithPassword({
       email,
       password,
     })
 
-    const cookieStore = await cookies()
-    cookieStore.set('token', token, {
+    ;(await cookies()).set('token', token, {
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days
     })
