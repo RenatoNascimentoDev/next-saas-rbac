@@ -12,5 +12,7 @@ export async function signInWithGithub() {
   )
   githubSignInURL.searchParams.set('scope', 'user')
 
+  console.log(githubSignInURL.toString())
+
   redirect(githubSignInURL.toString())
 }
