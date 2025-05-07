@@ -1,19 +1,22 @@
-import { CookiesFn, getCookie } from 'cookies-next'
+import { getCookie } from 'cookies-next'
 import ky from 'ky'
 
 export const api = ky.create({
-  prefixUrl: 'http://localhost:3333',
+  prefixUrl: 'https://fictional-spork-49rq99pqx5vfjxqw-3333.app.github.dev',
   hooks: {
     beforeRequest: [
       async (request) => {
-        let cookieStore: CookiesFn | undefined
+        let token: string | undefined
 
         if (typeof window === 'undefined') {
-          const { cookies: serverCookies } = await import('next/headers')
-
-          cookieStore = serverCookies
+          // Server-side
+          const { cookies } = await import('next/headers')
+          const serverCookies = await cookies()
+          token = serverCookies.get('token')?.value
+        } else {
+          // Client-side
+          token = getCookie('token') as string | undefined
         }
-        const token = getCookie('token', { cookies: cookieStore })
 
         if (token) {
           request.headers.set('Authorization', `Bearer ${token}`)
