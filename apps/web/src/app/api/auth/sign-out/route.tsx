@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   const redirectUrl =
-    'https://fictional-spork-49rq99pqx5vfjxqw-3000.app.github.dev'
+    'https://fictional-spork-49rq99pqx5vfjxqw-3000.app.github.dev/auth/sign-in'
 
   ;(await cookies()).delete('token')
 
