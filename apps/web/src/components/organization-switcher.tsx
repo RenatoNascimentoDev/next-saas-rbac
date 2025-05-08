@@ -11,14 +11,34 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import Link from 'next/link'
 import { getOrganizations } from '@/http/get-organizations'
+import { cookies } from 'next/headers'
 
 export async function OrganizationSwitcher() {
+  const currentOrg = (await cookies()).get('org')?.value
   const { organizations } = await getOrganizations()
+
+  const currentOrganization = organizations.find(
+    (org) => org.slug === currentOrg
+  )
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="rouded focus-vivble:ring-primary flex w-[168px] items-center gap-2 p-1 text-sm font-medium outline-none focus-visible:ring-2">
-        <span className="text-muted-foreground">Select organization</span>
+        {currentOrganization ? (
+          <>
+            <Avatar className="mr-2 size-4">
+              {currentOrganization.avatarUrl && (
+                <AvatarImage src={currentOrganization.avatarUrl} />
+              )}
+              <AvatarFallback />
+            </Avatar>
+            <span className="truncate text-left">
+              {currentOrganization.name}
+            </span>
+          </>
+        ) : (
+          <span className="text-muted-foreground">Select organization</span>
+        )}
         <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
