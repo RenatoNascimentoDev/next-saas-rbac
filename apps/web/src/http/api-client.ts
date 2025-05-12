@@ -1,8 +1,9 @@
 import { getCookie } from 'cookies-next'
 import ky from 'ky'
+import { env } from 'process'
 
 export const api = ky.create({
-  prefixUrl: 'https://fictional-spork-49rq99pqx5vfjxqw-3333.app.github.dev',
+  prefixUrl: env.NEXT_PUBLIC_API_URL,
   hooks: {
     beforeRequest: [
       async (request) => {
