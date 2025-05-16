@@ -25,14 +25,10 @@ export async function createProjectAction(data: FormData) {
   const { name, description } = result.data
 
   try {
-    const org = await getCurrentOrg()
-
-    if (!org) {
-      throw new Error('Organização não encontrada.')
-    }
+    const currentOrg = await getCurrentOrg()
 
     await createProject({
-      org,
+      org: currentOrg!,
       name,
       description,
     })
