@@ -15,7 +15,7 @@ export async function getPendingInvites(app: FastifyInstance) {
       '/pending-invites',
       {
         schema: {
-          tags: ['Invites'],
+          tags: ['invites'],
           summary: 'Get all user pending invites',
           response: {
             200: z.object({
