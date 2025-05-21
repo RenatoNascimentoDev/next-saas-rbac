@@ -1,8 +1,15 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Separator } from '@/components/ui/separator'
-import { getInvite } from '@/http/get-invite'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { CheckCircle, LogIn } from 'lucide-react'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+
+import { auth, isAuthenticated } from '@/auth/auth'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { acceptInvite } from '@/http/accept-invite'
+import { getInvite } from '@/http/get-invite'
 
 dayjs.extend(relativeTime)
 
@@ -16,6 +23,33 @@ export default async function InvitePage({ params }: InvitePageProps) {
   const inviteId = params.id
 
   const { invite } = await getInvite(inviteId)
+  const isUserAuthenticated = await isAuthenticated()
+
+  let currentUserEmail = null
+
+  if (isUserAuthenticated) {
+    const { user } = await auth()
+
+    currentUserEmail = user.email
+  }
+
+  const userIsAuthenticatedWithSameEmailFromInvite =
+    currentUserEmail === invite.email
+
+  async function signInFromInvite() {
+    'use server'
+    ;(await cookies()).set('inviteId', inviteId)
+
+    redirect(`/auth/sign-in?email=${invite.email}`)
+  }
+
+  async function acceptInviteAction() {
+    'use server'
+
+    await acceptInvite(inviteId)
+
+    redirect('/')
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4">
@@ -39,9 +73,27 @@ export default async function InvitePage({ params }: InvitePageProps) {
             .{' '}
             <span className="text-xs">{dayjs(invite.createdAt).fromNow()}</span>
           </p>
-
-          <Separator />
         </div>
+
+        <Separator />
+
+        {!isUserAuthenticated && (
+          <form action={signInFromInvite}>
+            <Button type="submit" variant="secondary" className="w-full">
+              <LogIn className="mr-2 size-4" />
+              Sign in to accept the invite
+            </Button>
+          </form>
+        )}
+
+        {userIsAuthenticatedWithSameEmailFromInvite && (
+          <form action={acceptInviteAction}>
+            <Button type="submit" variant="secondary" className="w-full">
+              <CheckCircle className="mr-2 size-4" />
+              Join {invite.organization.name}
+            </Button>
+          </form>
+        )}
       </div>
     </div>
   )

@@ -33,7 +33,7 @@ export function useFormState(
 
       setFormState(state)
 
-      requestFormReset(form)
+      startTransition(() => requestFormReset(form))
     })
   }
 
